@@ -1,6 +1,6 @@
 # Grasp Robotic Arm Workflow
 
-以下是运行流程的详细说明，所有命令均需要在 Conda 虚拟环境中运行。
+The following is a detailed workflow. All commands need to be executed within a Conda virtual environment.
 
 ```bash
 conda activate grasp
@@ -10,116 +10,115 @@ conda activate grasp
 
 ### Step 1: Connect and Start the Robotic Arm
 
-1. 启动 ROS 主节点：
+1. Start the ROS master node:
 
     ```bash
     roscore
     ```
 
-2. 进入工作空间目录：
+2. Navigate to the workspace directory:
 
     ```bash
     cd arm_ws/
     ```
 
-3. 分别在三个终端中运行以下命令：
+3. Run the following commands in three separate terminals:
 
-    - **启动 UR5 机械臂驱动**：
+    - **Launch the UR5 robot driver**:
 
       ```bash
       roslaunch ur_robot_driver ur5_bringup.launch limited:=true robot_ip:=10.10.10.1
       ```
 
-      等待输出信息：
+      Wait for the output message:
 
       ```
       [INFO] [<timestamp>]: Controller Spawner: Waiting for service controller_manager/load_controller
       ```
 
-    - **启动 MoveIt! 规划与执行**：
+    - **Launch MoveIt! planning and execution**:
 
       ```bash
       roslaunch ur5_moveit_config moveit_planning_execution.launch limited:=true
       ```
 
-      输出提示：
+      You should see the prompt:
 
       ```
       You can start planning now!
       ```
 
-    - **启动 RViz 可视化**：
+    - **Launch RViz visualization**:
 
       ```bash
       roslaunch ur5_moveit_config moveit_rviz.launch config:=true
       ```
 
-4. 在新打开的 RViz 中，添加以下模块：
+4. In the newly opened RViz window, add the following modules:
     - **Motion Planning**
     - **Robot Model**
 
-   然后将固定框架（Fixed Frame）从 `map` 改为 `base_link`。
+   Then change the Fixed Frame from `map` to `base_link`.
 
-5. 将机械臂移动到“home”位置。
+5. Move the robotic arm to the "home" position.
 
 ### Step 2: Open the Camera
 
-1. 打开新终端，进入 `graspnet-baseline` 目录：
+1. Open a new terminal and navigate to the `graspnet-baseline` directory:
 
     ```bash
     cd graspnet-baseline/
     ```
 
-2. 启动摄像头程序：
+2. Start the camera program:
 
     ```bash
     python shendu.py
     ```
 
-3. 程序运行几秒后，按下 `S` 键，等待深度图对焦。
+3. After a few seconds, press the `S` key and wait for the depth map to focus.
 
 ### Step 3: Calculate the Grasping Pose
 
-1. 打开新终端，进入 `graspnet-baseline` 目录：
+1. Open a new terminal and navigate to the `graspnet-baseline` directory:
 
     ```bash
     cd graspnet-baseline/
     ```
 
-2. 运行以下命令以解除环境变量的限制：
+2. Run the following command to unset the environment variable:
 
     ```bash
     unset LD_LIBRARY_PATH
     ```
 
-3. 启动抓取姿态计算程序：
+3. Start the grasp pose calculation program:
 
     ```bash
     ./run.sh
     ```
 
-4. 关闭第一个接收到的图像，抓取姿态将自动生成并显示。
+4. Close the first received image, and the grasp pose for the robotic arm will appear.
 
 ### Step 4: Drive the Robotic Arm
 
-1. 确保当前目录为 `graspnet-baseline`：
+1. Ensure you are in the `graspnet-baseline` directory:
 
     ```bash
     cd graspnet-baseline/
     ```
 
-2. 运行机械臂控制程序：
+2. Run the robotic arm control program:
 
     ```bash
     python ur5_cartesian.py
     ```
 
-3. 操作完成。
+3. The operation is complete.
 
 ---
 
-### 注意事项
-- 确保每一步骤在正确的终端中运行。
-- 若遇到问题，请检查相关配置文件与环境变量。
-- 所有代码假设已正确配置 ROS 和 MoveIt! 环境。
-
+### Notes
+- Ensure that each step is executed in the correct terminal.
+- If issues arise, check the relevant configuration files and environment variables.
+- The instructions assume that ROS and MoveIt! environments are correctly configured.
